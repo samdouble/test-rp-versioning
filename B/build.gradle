@@ -8,7 +8,7 @@ application {
 }
 
 group = 'com.example'
-version = '1.0-SNAPSHOT'
+version = '0.1.0' # x-release-please-released-version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -23,6 +23,10 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+processResources {
+    expand(version: project.version)
 }
 
 test {
