@@ -1,0 +1,6 @@
+subprojects {
+    group = 'com.example'
+    repositories {
+        mavenCentral()
+    }
+}

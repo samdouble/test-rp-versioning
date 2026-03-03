@@ -1,19 +1,22 @@
 {
+  "last-release-sha": "0dcbecec16af578bf89c3018eddc36eb80fef5ed",
   "include-component-in-tag": true,
   "include-v-in-tag": true,
   "separate-pull-requests": true,
   "packages": {
-    "moduleA": {
+    "A": {
       "release-type": "java",
       "path": "A",
       "skip-labeling": true,
+      "skip-snapshot": true,
       "component": "moduleA",
       "extra-files": ["build.gradle"]
     },
-    "moduleB": {
+    "B": {
       "release-type": "java",
       "path": "B",
       "skip-labeling": true,
+      "skip-snapshot": true,
       "component": "moduleB",
       "extra-files": ["build.gradle"]
     }

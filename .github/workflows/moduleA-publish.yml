@@ -1,0 +1,22 @@
+name: Publish A
+
+on:
+  push:
+    tags:
+      - 'moduleA-v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: A
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install doctl
+        run: |
+          export TAG=${{ github.ref_name }}
+          export VERSION="${TAG#*-}"
+          export VERSION_NUMBER="${VERSION:1}"
+          echo "Published module A version $VERSION_NUMBER"
