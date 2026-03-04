@@ -32,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
-      - name: Detect core-only change and add chore commits
+      - name: Detect core-only change and add sync commits
         id: sync
         run: |
           set -e
@@ -45,7 +45,12 @@ jobs:
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" || true)
+          if ! git rev-parse --verify --quiet "$BEFORE" >/dev/null || ! git rev-parse --verify --quiet "$AFTER" >/dev/null; then
+            echo "Cannot resolve push refs (e.g. force push), skipping sync"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          CHANGED=$(git diff --name-only "$BEFORE" "$AFTER")
           core_changed=false
           a_changed=false
           b_changed=false
@@ -57,13 +62,29 @@ jobs:
             echo "pushed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          has_feat=false
+          has_fix=false
+          while IFS= read -r subject; do
+            type=$(echo "$subject" | cut -d'(' -f1 | cut -d':' -f1 | tr -d ' ')
+            [ "$type" = "feat" ] && has_feat=true
+            [ "$type" = "fix" ] && has_fix=true
+          done < <(git log --format="%s" "$BEFORE".."$AFTER" -- core/ 2>/dev/null || true)
+          if [ "$has_feat" = "true" ]; then
+            COMMIT_TYPE=feat
+          elif [ "$has_fix" = "true" ]; then
+            COMMIT_TYPE=fix
+          else
+            echo "Core changes have no feat/fix commits, skipping sync"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           need_commit=false
           if [ "$a_changed" = "false" ]; then
-            git commit --allow-empty -m "chore(moduleA): update for core changes"
+            git commit --allow-empty -m "${COMMIT_TYPE}(moduleA): update for core changes"
             need_commit=true
           fi
           if [ "$b_changed" = "false" ]; then
-            git commit --allow-empty -m "chore(moduleB): update for core changes"
+            git commit --allow-empty -m "${COMMIT_TYPE}(moduleB): update for core changes"
             need_commit=true
           fi
           if [ "$need_commit" = "true" ]; then
