@@ -57,3 +57,4 @@ chmod +x .githooks/pre-commit
 ```
 
 After that, any commit that only has staged files under `core/` will automatically stage a trivial change to `A/build.gradle` and `B/build.gradle` as well.
+
