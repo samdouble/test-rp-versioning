@@ -36,7 +36,7 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
-          manifest-file: .release-please-manifest.jsonc
+          manifest-file: .release-please-manifest.json
       - name: Print release outputs for debugging
         continue-on-error: true
         run: |
@@ -53,7 +53,7 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
-          manifest-file: .release-please-manifest.jsonc
+          manifest-file: .release-please-manifest.json
           target-branch: master
 
   release-please-B:
@@ -66,5 +66,5 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
-          manifest-file: .release-please-manifest.jsonc
+          manifest-file: .release-please-manifest.json
           target-branch: master
