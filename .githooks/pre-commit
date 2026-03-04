@@ -1,0 +1,26 @@
+#!/bin/sh
+# When a commit only touches core/, also touch A and B so release-please
+# attributes the commit to both modules (by path) and they get a release.
+
+set -e
+STAGED=$(git diff --cached --name-only)
+[ -z "$STAGED" ] && exit 0
+
+# Check if every staged file is under core/
+only_core=true
+for f in $STAGED; do
+  case "$f" in
+    core/*) ;;
+    *) only_core=false; break ;;
+  esac
+done
+
+if [ "$only_core" = true ]; then
+  for dir in A B; do
+    if [ -f "$dir/build.gradle" ]; then
+      echo "" >> "$dir/build.gradle"
+      git add "$dir/build.gradle"
+    fi
+  done
+fi
+exit 0
