@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/samdouble/test-rp-versioning/compare/moduleA-v0.3.0...moduleA-v1.0.0) (2026-03-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* **moduleA:** introduced a breaking change
+
+### Features
+
+* **moduleA:** introduced a breaking change ([1ef5e16](https://github.com/samdouble/test-rp-versioning/commit/1ef5e16eb22c2bf609ace4cc7bd5a84735374566))
+
 ## [0.3.0](https://github.com/samdouble/test-rp-versioning/compare/moduleA-v0.2.0...moduleA-v0.3.0) (2026-03-04)
 
 
