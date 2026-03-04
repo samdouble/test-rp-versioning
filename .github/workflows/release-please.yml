@@ -32,6 +32,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
+      # TODO: Until we can use https://github.com/googleapis/release-please/pull/2534
       - name: Detect core-only change and add sync commits
         id: sync
         run: |
@@ -80,11 +81,15 @@ jobs:
           fi
           need_commit=false
           if [ "$a_changed" = "false" ]; then
-            git commit --allow-empty -m "${COMMIT_TYPE}(moduleA): update for core changes"
+            echo "" >> A/build.gradle
+            git add A/build.gradle
+            git commit -m "${COMMIT_TYPE}(moduleA): update for core changes"
             need_commit=true
           fi
           if [ "$b_changed" = "false" ]; then
-            git commit --allow-empty -m "${COMMIT_TYPE}(moduleB): update for core changes"
+            echo "" >> B/build.gradle
+            git add B/build.gradle
+            git commit -m "${COMMIT_TYPE}(moduleB): update for core changes"
             need_commit=true
           fi
           if [ "$need_commit" = "true" ]; then
