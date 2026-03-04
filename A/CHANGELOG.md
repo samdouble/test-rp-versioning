@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/samdouble/test-rp-versioning/compare/moduleA-v1.0.0...moduleA-v1.1.0) (2026-03-04)
+
+
+### Features
+
+* **moduleA:** add some feature to v1 ([db4333d](https://github.com/samdouble/test-rp-versioning/commit/db4333d91b0f1a7923d3b56ed0006b153754c50f))
+
 ## [1.0.0](https://github.com/samdouble/test-rp-versioning/compare/moduleA-v0.3.0...moduleA-v1.0.0) (2026-03-04)
 
 
