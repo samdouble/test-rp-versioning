@@ -15,9 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
-      A--tag_name: ${{ steps.release.outputs.A--tag_name}}
       A--release_created: ${{ steps.release.outputs.A--release_created}}
-      B--tag_name: ${{ steps.release.outputs.B--tag_name}}
       B--release_created: ${{ steps.release.outputs.B--release_created}}
     steps:
       - name: Checkout
@@ -32,10 +30,12 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
       - name: Print release outputs for debugging
-        continue-on-error: true
+        continue-on-error: false
         run: |
           echo "Release outputs:"
-          echo "${{ toJson(steps.release.outputs) }}"
+          cat << 'RELEASE_OUTPUTS_EOF'
+          ${{ toJson(steps.release.outputs) }}
+          RELEASE_OUTPUTS_EOF
 
   release-please-A:
     runs-on: ubuntu-latest

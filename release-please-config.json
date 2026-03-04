@@ -7,7 +7,6 @@
     "A": {
       "release-type": "java",
       "path": "A",
-      "skip-labeling": true,
       "skip-snapshot": true,
       "component": "moduleA",
       "extra-files": ["build.gradle"]
@@ -15,7 +14,6 @@
     "B": {
       "release-type": "java",
       "path": "B",
-      "skip-labeling": true,
       "skip-snapshot": true,
       "component": "moduleB",
       "extra-files": ["build.gradle"]

@@ -11,6 +11,7 @@ jobs:
       - name: Commitlint
         uses: wagoid/commitlint-github-action@v6
 
+  # https://github.com/googleapis/release-please/pull/2534 could be useful to replace this
   core-commits-touch-modules:
     name: Core commits must touch A and B
     runs-on: ubuntu-latest
@@ -35,7 +36,7 @@ jobs:
               esac
             done
             if [ "$only_core" = true ]; then
-              echo "::error::Commit $sha only touches core/. Release-please needs A/ or B/ touched so both modules get a release. Add a trivial change to A/build.gradle and B/build.gradle, or run: git config core.hooksPath .githooks && chmod +x .githooks/pre-commit"
+              echo "::error::Commit $sha only touches core/. Release-please needs A/ or B/ touched so both modules get a release. Add a trivial change to A/build.gradle and B/build.gradle, or set up your Git hooks (see README)."
               fail=1
             fi
           done
