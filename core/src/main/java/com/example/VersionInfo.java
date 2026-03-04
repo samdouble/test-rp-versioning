@@ -7,7 +7,6 @@ import java.util.Properties;
 public final class VersionInfo {
     private VersionInfo() {}
 
-
     public static String getVersion(Class<?> resourceContext) {
         try (InputStream in = resourceContext.getResourceAsStream("/version.properties")) {
             if (in != null) {
