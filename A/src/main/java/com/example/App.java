@@ -1,5 +1,6 @@
 package com.example;
 
+
 public class App {
     public static void main(String[] args) {
         String version = VersionInfo.getVersion(App.class);
