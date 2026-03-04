@@ -19,18 +19,81 @@ jobs:
         with:
           fetch-depth: 0
 
+  sync-core-to-modules:
+    name: Sync core changes to A and B
+    runs-on: ubuntu-latest
+    needs: checkout
+    timeout-minutes: 1
+    outputs:
+      pushed: ${{ steps.sync.outputs.pushed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+      - name: Detect core-only change and add chore commits
+        id: sync
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.event.after }}"
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "Initial push or no prior commit, skipping sync"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          CHANGED=$(git diff --name-only "$BEFORE" "$AFTER" || true)
+          core_changed=false
+          a_changed=false
+          b_changed=false
+          echo "$CHANGED" | grep -q '^core/' && core_changed=true || true
+          echo "$CHANGED" | grep -q '^A/' && a_changed=true || true
+          echo "$CHANGED" | grep -q '^B/' && b_changed=true || true
+          if [ "$core_changed" = "false" ]; then
+            echo "No core changes, skipping sync"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          need_commit=false
+          if [ "$a_changed" = "false" ]; then
+            git commit --allow-empty -m "chore(moduleA): update for core changes"
+            need_commit=true
+          fi
+          if [ "$b_changed" = "false" ]; then
+            git commit --allow-empty -m "chore(moduleB): update for core changes"
+            need_commit=true
+          fi
+          if [ "$need_commit" = "true" ]; then
+            git push origin HEAD:master
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+          fi
+
   release-please:
     name: Release Please
     runs-on: ubuntu-latest
     timeout-minutes: 2
     needs:
       - checkout
+      - sync-core-to-modules
     outputs:
       A--tag_name: ${{ steps.release.outputs.A--tag_name}}
       A--release_created: ${{ steps.release.outputs.A--release_created}}
       B--tag_name: ${{ steps.release.outputs.B--tag_name}}
       B--release_created: ${{ steps.release.outputs.B--release_created}}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+      - name: Pull if sync pushed
+        if: needs.sync-core-to-modules.outputs.pushed == 'true'
+        run: git pull origin master
       - uses: googleapis/release-please-action@v4
         id: release
         with:
