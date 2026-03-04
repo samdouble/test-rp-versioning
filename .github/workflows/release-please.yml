@@ -26,26 +26,26 @@ jobs:
     needs:
       - checkout
     outputs:
-      app--tag_name: ${{ steps.release.outputs.app--tag_name}}
-      app--release_created: ${{ steps.release.outputs.app--release_created}}
-      backend--tag_name: ${{ steps.release.outputs.backend--tag_name}}
-      backend--release_created: ${{ steps.release.outputs.backend--release_created}}
+      A--tag_name: ${{ steps.release.outputs.A--tag_name}}
+      A--release_created: ${{ steps.release.outputs.A--release_created}}
+      B--tag_name: ${{ steps.release.outputs.B--tag_name}}
+      B--release_created: ${{ steps.release.outputs.B--release_created}}
     steps:
       - uses: googleapis/release-please-action@v4
         id: release
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+          manifest-file: .release-please-manifest.jsonc
       - name: Print release outputs for debugging
         continue-on-error: true
         run: |
           echo "Release outputs:"
           echo "${{ toJson(steps.release.outputs) }}"
 
-  release-please-app:
+  release-please-A:
     runs-on: ubuntu-latest
-    if: ${{needs.release-please.outputs.app--release_created}}
+    if: ${{needs.release-please.outputs.A--release_created}}
     needs: release-please
     timeout-minutes: 1
     steps:
@@ -53,12 +53,12 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+          manifest-file: .release-please-manifest.jsonc
           target-branch: master
 
-  release-please-backend:
+  release-please-B:
     runs-on: ubuntu-latest
-    if: ${{needs.release-please.outputs.backend--release_created}}
+    if: ${{needs.release-please.outputs.B--release_created}}
     needs: release-please
     timeout-minutes: 1
     steps:
@@ -66,5 +66,5 @@ jobs:
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+          manifest-file: .release-please-manifest.jsonc
           target-branch: master

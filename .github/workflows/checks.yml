@@ -1,4 +1,4 @@
-name: App Checks
+name: Checks for A and B
 
 on: [pull_request]
 
